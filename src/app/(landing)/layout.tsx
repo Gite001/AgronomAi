@@ -19,7 +19,7 @@ export default function LandingLayout({
 
   useEffect(() => {
     if (!loading && user) {
-      router.push('/dashboard');
+      router.push('/about');
     }
   }, [user, loading, router]);
   
