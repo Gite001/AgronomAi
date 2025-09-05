@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AgronomAi">
+    <vision>
+        <goal>Créer une application web moderne, intuitive et mobile-first pour une utilisation sur le terrain, agissant comme un assistant intelligent pour les professionnels de l'agriculture.</goal>
+        <theme name="Nuit Fertile" default="true">
+            <palette>
+                <background description="Gris-vert très foncé et profond (#0A100D, hsl(150 25% 6%)) pour une ambiance professionnelle et high-tech." />
+                <cards description="Une nuance légèrement plus claire (#141A17, hsl(160 20% 8%)) pour une profondeur et un contraste subtils."/>
+                <primary description="Vert frais et vibrant (#56E659, hsl(122 70% 59%)) pour les actions clés et les mises en évidence, offrant un excellent contraste sur le fond sombre." />
+                <accent description="Vert-jaune vif (#B9F559, hsl(74 95% 65%)) pour les rehauts secondaires et les éléments dynamiques." />
+                <text description="Blanc cassé doux (hsl(120 10% 88%)) pour une lisibilité et un confort optimaux." />
+            </palette>
+            <typography>
+                <font family="Inter" provider="Google Fonts" weights="400;500;600;700" usage="all" description="Utiliser Inter pour tous les éléments textuels (titres et corps) afin d'assurer une identité visuelle propre et cohérente." />
+            </typography>
+        </theme>
+    </vision>
+
+    <tech_stack>
+        <framework name="Next.js" features="App Router, React, TypeScript" />
+        <ui_components library="ShadCN/UI" />
+        <styling tool="Tailwind CSS" strategy="Variables de thème dans globals.css, thème sombre par défaut." />
+        <ai_backend service="Genkit" model="Google Gemini" />
+        <data_persistence strategy="LocalStorage" description="Toutes les données utilisateur (journal, plan d'action) sont stockées localement dans le navigateur pour garantir la confidentialité et la rapidité." />
+    </tech_stack>
+
+    <features>
+        <feature name="Page d'Accueil (Landing Page)">
+            <description>Une vitrine élégante présentant les capacités de l'application. Elle doit afficher des cartes d'outils purement descriptives dans une grille équilibrée, avec un effet de survol engageant. La page doit comporter un bouton d'appel à l'action flottant pour un accès rapide à l'application.</description>
+        </feature>
+
+        <feature name="Tableau de Bord">
+            <description>Un hub centralisé avec une mise en page en une seule colonne, centrée. Il doit présenter les composants dans l'ordre suivant : Bouton d'accès à l'Assistant IA, État Sanitaire Général (Pression Ravageurs, Stress Abiotique), Boutons d'accès rapide aux outils, puis les cartes de données (Derniers Diagnostics, Suivi des Ravageurs), et enfin une section d'aide à la prise en main.</description>
+            <tool name="Assistant IA" description="Permet à l'utilisateur de poser n'importe quelle question agronomique et de recevoir une réponse détaillée et experte, mise en forme en Markdown." />
+        </feature>
+
+        <feature name="Outils de Diagnostic IA">
+            <tool name="Diagnostic par Image" description="Analyse les photos de plantes (importées ou prises avec la caméra) pour identifier les problèmes et fournit un diagnostic et un plan d'action. L'utilisateur peut ajouter l'action suggérée au Plan d'Action." />
+            <tool name="Scouting IA" description="Compte les ravageurs sur les pièges collants (photo importée ou prise avec la caméra) et génère des recommandations de lutte si un seuil de risque défini par l'utilisateur est atteint." />
+            <tool name="Interprète d'Analyse" description="Transforme les rapports de laboratoire (texte ou image) en plans d'action exploitables, formatés en Markdown." />
+            <tool name="Pilote Hors-Sol" description="Recommande des ajustements pour les solutions de fertigation hors-sol en analysant les données d'irrigation, de drainage, le type de culture, le stade, et la recette actuelle." />
+        </feature>
+
+        <feature name="Outils de Conception & Calcul">
+             <tool name="Designer d'Irrigation" description="Dimensionne un réseau d'irrigation complet (pompe, conduites, rampes) à partir de paramètres agronomiques et de terrain. Fournit un rapport technique détaillé en HTML." />
+            <tool name="Calculateurs de Recette">
+                <calculator type="Fertilisation en Sol" description="Génère un plan de fumure en kg/ha à partir d'un objectif d'azote, d'un équilibre cible et d'une liste optionnelle d'engrais." />
+                <calculator type="Bilan Cible" description="Génère une recette de solution nutritive en g/1000L à partir d'un bilan cible (N-P-K-Ca-Mg) et de PPM d'azote, pour une utilisation en hors-sol avec de l'eau pure." />
+                <calculator type="Coïc-Lesaint" description="Génère une recette avancée en deux solutions mères (A et B) en se basant sur une analyse d'eau complète et une solution fille cible." />
+            </tool>
+        </feature>
+
+        <feature name="Bases de Connaissances">
+             <tool name="Études de Cas" description="Fournit des protocoles de culture complets, pré-rédigés en HTML, pour des cultures spécifiques (Tomate, Poivron, etc.) dans un contexte semi-aride sous abri. Chaque étude couvre le choix variétal, la fertigation, la protection phytosanitaire et les points de vigilance." />
+            <tool name="Guides Techniques" description="Une bibliothèque de guides pratiques pré-rédigés en HTML sur des sujets fondamentaux comme la gestion de l'eau, l'encyclopédie des ravageurs, la lutte biologique, la fertilisation, la reconnaissance des carences, la gestion de la matière organique, la désinfection des sols, etc. Le contenu est présenté dans des accordéons pour une lecture facile." />
+        </feature>
+
+        <feature name="Suivi et Traçabilité">
+            <tool name="Journal de Bord" description="Un historique de toutes les analyses de l'utilisateur, sauvegardé localement dans le navigateur. Il est consultable, filtrable (par mot-clé, outil, et plage de dates) et présente les résultats de manière structurée dans un accordéon." />
+             <tool name="Plan d'Action" description="Une liste de tâches où l'utilisateur peut ajouter les actions recommandées par l'IA. Chaque tâche a un statut (À faire, En cours, Terminé) et garde une trace de l'outil source."/>
+            <tool name="Cartographie" description="Une carte interactive (@vis.gl/react-google-maps) pour géolocaliser les diagnostics enregistrés. Les marqueurs sont colorés en fonction du niveau de risque (élevé, modéré, faible)." />
+        </feature>
+
+        <feature name="Guides & Paramètres">
+            <tool name="Guide d'Utilisation" description="Une page expliquant la philosophie et le fonctionnement de l'application." />
+            <tool name="À Propos" description="Une page présentant la mission, la vision et le public cible d'AgronomAi." />
+            <tool name="Paramètres" description="Une page (actuellement statique) pour les préférences futures de l'application." />
+        </feature>
+    </features>
+
+    <quality_and_ux>
+        <requirement description="L'application doit être entièrement responsive (mobile-first)." />
+        <requirement description="Navigation fluide avec une barre latérale unique et persistante sur les pages de l'application, avec des sous-menus dépliables, comme point d'entrée principal." />
+        <requirement description="Gestion de l'historique et des données utilisateur (journal, plan d'action) côté client via les hooks de React et le localStorage pour garantir la confidentialité et la rapidité." />
+        <requirement description="L'interface doit être en français par défaut." />
+        <requirement description="L'application doit être structurée avec un layout 'public' pour la page d'accueil et un layout 'app' pour les pages authentifiées, avec une redirection automatique de la racine vers l'accueil."/>
+    </quality_and_ux>
+
+    <request>
+        <instruction>Construire la structure complète du projet, y compris tous les fichiers, composants, flux Genkit et pages nécessaires pour réaliser cette vision, avec une adhésion stricte au thème sombre spécifié dans la balise vision.</instruction>
+    </request>
+
+</project>
