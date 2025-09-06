@@ -10,8 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "deploy": "gh-pages -d . -b main -m 'Mise à jour du projet'"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@genkit-ai/firebase": "^1.15.5",
