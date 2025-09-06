@@ -26,11 +26,15 @@ export async function askAgronomist(input: AskAgronomistInput): Promise<AskAgron
   return askAgronomistFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'askAgronomistPrompt',
-  input: {schema: AskAgronomistInputSchema},
-  output: {schema: AskAgronomistOutputSchema},
-  prompt: `Vous êtes un expert agronome de haut niveau. Votre mission est de fournir des réponses précises, factuelles et professionnelles aux questions des utilisateurs.
+const askAgronomistFlow = ai.defineFlow(
+  {
+    name: 'askAgronomistFlow',
+    inputSchema: AskAgronomistInputSchema,
+    outputSchema: AskAgronomistOutputSchema,
+  },
+  async ({ question }) => {
+    const { output } = await ai.generate({
+        prompt: `Vous êtes un expert agronome de haut niveau. Votre mission est de fournir des réponses précises, factuelles et professionnelles aux questions des utilisateurs.
 
 Votre réponse doit être :
 1.  **Directe et Claire :** Allez droit au but et répondez précisément à la question posée.
@@ -40,18 +44,13 @@ Votre réponse doit être :
 5.  **En Français :** L'intégralité de votre réponse doit être en français.
 
 Question de l'utilisateur :
-{{{question}}}
+${question}
 `,
-});
+        output: {
+            schema: AskAgronomistOutputSchema,
+        },
+    });
 
-const askAgronomistFlow = ai.defineFlow(
-  {
-    name: 'askAgronomistFlow',
-    inputSchema: AskAgronomistInputSchema,
-    outputSchema: AskAgronomistOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
     return output!;
   }
 );
