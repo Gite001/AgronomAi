@@ -54,7 +54,10 @@ export default function DiagnosticImagePage() {
     let stream: MediaStream | null = null;
     const getCameraPermission = async () => {
       if (inputMode !== 'camera') {
-        stream?.getTracks().forEach(track => track.stop());
+        if (videoRef.current && videoRef.current.srcObject) {
+            (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+            videoRef.current.srcObject = null;
+        }
         return;
       };
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -76,7 +79,9 @@ export default function DiagnosticImagePage() {
     getCameraPermission();
 
     return () => {
-        stream?.getTracks().forEach(track => track.stop());
+        if (videoRef.current && videoRef.current.srcObject) {
+            (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+        }
     }
   }, [inputMode, toast]);
 
@@ -130,8 +135,8 @@ export default function DiagnosticImagePage() {
           });
           toast({ title: "Position GPS acquise", description: "Les coordonnées ont été enregistrées." });
         },
-        (error) => {
-          toast({ variant: "destructive", title: "Erreur de localisation", description: "Impossible d'obtenir la position GPS. Vérifiez les autorisations." });
+        () => {
+          toast({ variant: "destructive", title: "Erreur de localisation", description: "Impossible d'obtenir la position GPS. Vérifiez les autorisations de votre navigateur." });
         }
       );
     } else {
@@ -299,7 +304,7 @@ export default function DiagnosticImagePage() {
             {error && (
               <Alert variant="destructive">
                 <TriangleAlert className="h-4 w-4" />
-                <AlertTitle>Erreur</AlertTitle>
+                <AlertTitle>Erreur d'Analyse</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}

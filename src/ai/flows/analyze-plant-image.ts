@@ -31,11 +31,16 @@ export async function analyzePlantImage(input: AnalyzePlantImageInput): Promise<
   return analyzePlantImageFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'analyzePlantImagePrompt',
-  input: {schema: AnalyzePlantImageInputSchema},
-  output: {schema: AnalyzePlantImageOutputSchema},
-  prompt: `Vous êtes un phytopathologiste d'élite, un expert reconnu pour la précision de ses diagnostics. Votre mission est d'identifier la maladie de la plante à partir de l'image fournie.
+
+const analyzePlantImageFlow = ai.defineFlow(
+  {
+    name: 'analyzePlantImageFlow',
+    inputSchema: AnalyzePlantImageInputSchema,
+    outputSchema: AnalyzePlantImageOutputSchema,
+  },
+  async ({ photoDataUri }) => {
+
+    const prompt = `Vous êtes un phytopathologiste d'élite, un expert reconnu pour la précision de ses diagnostics. Votre mission est d'identifier la maladie de la plante à partir de l'image fournie.
 
 Votre processus de pensée doit suivre ces étapes :
 1.  **Analyse Visuelle des Symptômes :** Décrivez brièvement mais précisément les symptômes que vous observez (ex: "Feutrage blanc poudreux sur la face supérieure des feuilles", "Taches brunes huileuses avec un halo jaune", "Pourriture grise cotonneuse sur la tige").
@@ -48,18 +53,20 @@ RÈGLES IMPÉRATIVES :
 -   **PRUDENCE :** Si l'image est de mauvaise qualité ou si les symptômes sont ambigus, exprimez clairement votre incertitude. NE JAMAIS INVENTER UN DIAGNOSTIC. Il vaut mieux être prudent que de donner un mauvais conseil. En cas de doute sérieux, votre plan d'action DOIT recommander une observation plus approfondie ou des analyses complémentaires.
 -   **CLARTÉ :** La réponse doit être en français.
 
-Image: {{media url=photoDataUri}}
-  `,
-});
+Image à analyser: {{media url=photoDataUri}}
+`;
 
-const analyzePlantImageFlow = ai.defineFlow(
-  {
-    name: 'analyzePlantImageFlow',
-    inputSchema: AnalyzePlantImageInputSchema,
-    outputSchema: AnalyzePlantImageOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
+    const { output } = await ai.generate({
+        prompt: prompt,
+        model: 'googleai/gemini-1.5-flash-latest',
+        output: {
+            schema: AnalyzePlantImageOutputSchema,
+        },
+        promptData: {
+          photoDataUri
+        }
+    });
+
     return output!;
   }
 );
