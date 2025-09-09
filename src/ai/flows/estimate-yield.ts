@@ -57,13 +57,18 @@ const YieldAnalysisSchema = z.object({
     analysisSummary: z.string().describe("A brief summary of the analysis, mentioning any potential issues that might affect accuracy.")
 });
 
-const prompt = ai.definePrompt({
-  name: 'estimateYieldPrompt',
-  input: { schema: z.object({ videoDataUri: z.string(), cropType: CropTypeSchema }) },
-  output: { schema: YieldAnalysisSchema },
-  prompt: `Vous êtes un ingénieur agronome d'élite, spécialisé dans l'estimation de rendement par analyse d'images. Votre travail est d'une rigueur scientifique absolue. Vous ne devez PAS calculer de rendement final en kg/ha. Votre SEUL rôle est d'analyser la vidéo et de compter ce que vous voyez sur les plantes.
 
-La culture à analyser est : {{{cropType}}}.
+const estimateYieldFlow = ai.defineFlow(
+  {
+    name: 'estimateYieldFlow',
+    inputSchema: EstimateYieldInputSchema,
+    outputSchema: EstimateYieldOutputSchema,
+  },
+  async (input) => {
+    
+    const promptText = `Vous êtes un ingénieur agronome d'élite, spécialisé dans l'estimation de rendement par analyse d'images. Votre travail est d'une rigueur scientifique absolue. Vous ne devez PAS calculer de rendement final en kg/ha. Votre SEUL rôle est d'analyser la vidéo et de compter ce que vous voyez sur les plantes.
+
+La culture à analyser est : ${input.cropType}.
 
 Votre processus d'analyse, d'une précision chirurgicale, doit suivre ces étapes :
 
@@ -84,20 +89,18 @@ Votre processus d'analyse, d'une précision chirurgicale, doit suivre ces étape
 -   **RIGUEUR ABSOLUE :** Basez vos comptages UNIQUEMENT sur ce qui est visible. Ne devinez jamais, ne extrapolez pas au-delà des images fournies.
 -   **GESTION DE LA MAUVAISE QUALITÉ :** Si la vidéo est inexploitable, mettez tous les comptages à 0, attribuez un score de confiance très bas, et expliquez clairement pourquoi dans le résumé (ex: "Vidéo trop floue et instable pour une analyse fiable.").
 -   **LANGUE :** Votre réponse doit être exclusivement en français.
-
-**Vidéo à analyser :**
-{{media url=videoDataUri}}
-`,
-});
-
-const estimateYieldFlow = ai.defineFlow(
-  {
-    name: 'estimateYieldFlow',
-    inputSchema: EstimateYieldInputSchema,
-    outputSchema: EstimateYieldOutputSchema,
-  },
-  async (input) => {
-    const { output: analysisResult } = await prompt({ videoDataUri: input.videoDataUri, cropType: input.cropType });
+`;
+    
+    const { output: analysisResult } = await ai.generate({
+        model: 'googleai/gemini-1.5-flash-latest',
+        prompt: [
+            { text: promptText },
+            { media: { url: input.videoDataUri } }
+        ],
+        output: {
+            schema: YieldAnalysisSchema
+        }
+    });
 
     if (!analysisResult) {
         throw new Error("L'analyse visuelle par l'IA a échoué.");

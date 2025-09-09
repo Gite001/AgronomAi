@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -58,19 +59,17 @@ IMPORTANT : Si les données sont illisibles, incomplètes ou si vous ne pouvez p
 La réponse doit être impérativement et uniquement en français.
 `;
 
-    const prompt = [
-        {text: basePrompt},
-    ];
+    const promptParts: any[] = [{text: basePrompt}];
 
     if (isImage) {
-        prompt.push({media: {url: input.reportData}});
+        promptParts.push({media: {url: input.reportData}});
     } else {
-        prompt.push({text: `\n\nRapport de laboratoire (texte):\n${input.reportData}`});
+        promptParts.push({text: `\n\nRapport de laboratoire (texte):\n${input.reportData}`});
     }
 
     const {output} = await ai.generate({
-        prompt: prompt,
-        model: 'googleai/gemini-1.5-flash-latest', // Use a model that supports multimodal input
+        prompt: promptParts,
+        model: 'googleai/gemini-1.5-flash-latest',
         output: {
             schema: InterpretLabReportOutputSchema,
         },

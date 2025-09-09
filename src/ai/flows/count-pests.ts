@@ -58,15 +58,17 @@ RÈGLES IMPÉRATIVES:
 4.  **TON D'EXPERT:** Si le seuil est dépassé, la recommandation doit être convaincante et justifiée. Expliquez brièvement POURQUOI vous recommandez une solution (ex: "Le seuil pour les aleurodes est dépassé. Un lâcher d'Encarsia formosa est recommandé pour parasiter les larves et contrôler la population à sa source."). Si le seuil n'est pas atteint, conseillez de maintenir une surveillance active.
 5.  **FORMAT & LANGUE:** La réponse doit être en français.
 
-Seuil de risque défini par l'utilisateur: ${riskThreshold}
-Image à analyser: {{media url=photoDataUri}}`;
+Seuil de risque défini par l'utilisateur: ${riskThreshold}`;
 
     const { output } = await ai.generate({
-        prompt: prompt,
         model: 'googleai/gemini-1.5-flash-latest',
         output: {
             schema: CountPestsOutputSchema,
         },
+        prompt: [
+            { text: prompt },
+            { media: { url: photoDataUri } }
+        ]
     });
 
     return output!;
