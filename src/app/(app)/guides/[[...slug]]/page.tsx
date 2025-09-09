@@ -63,23 +63,20 @@ const guideCategories = [
 
 const allGuideItems = guideCategories.flatMap(category => category.items);
 
-// Simplified component to render HTML content directly
+// This component now handles the new card-based layout structure.
 function GuideContent({ htmlContent }: { htmlContent: string }) {
-    // We replace <details> and <summary> with simpler tags like <div> and <h3>
-    // to remove the accordion behavior while preserving structure.
-    const simplifiedHtml = htmlContent
-        .replace(/<details>/g, '<div class="guide-section">')
-        .replace(/<\/details>/g, '</div>')
-        .replace(/<summary>/g, '<h3>')
-        .replace(/<\/summary>/g, '</h3>')
-        .replace(/<div class="content">/g, '<div class="guide-content-body">')
-        .replace(/<\/div>/g,'</div>');
-
+    const processedHtml = htmlContent
+        // These replacements are for the card-like structure.
+        .replace(/<div class="custom-card">/g, '<div class="my-4 p-4 border rounded-lg bg-card/50">')
+        .replace(/<\/div>/g, '</div>')
+        .replace(/<h3>/g, '<h3 class="text-base font-semibold text-foreground mt-0 mb-2">')
+        .replace(/<h4>/g, '<h4 class="text-sm font-semibold text-foreground mt-3 mb-1">')
+        .replace(/<div class="custom-card-content">/g, '<div class="space-y-2">');
 
     return (
         <div 
             className="prose prose-sm prose-invert max-w-none text-left" 
-            dangerouslySetInnerHTML={{ __html: simplifiedHtml }} 
+            dangerouslySetInnerHTML={{ __html: processedHtml }} 
         />
     );
 }
